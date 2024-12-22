@@ -14,4 +14,4 @@ jobs:
         run: bun install
 
       - name: Check for unused code
-        run: bun run test:unused-code
+        run: bun run unused-code-check

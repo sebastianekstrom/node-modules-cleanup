@@ -35,8 +35,11 @@ npx node-modules-cleanup@latest ./
 # Find all node_modules in a specific directory
 npx node-modules-cleanup@latest ~/Desktop/projects
 
-# Skip confirmation of deleting folders
-npx node-modules-cleanup@latest ~/Desktop/projects --skip-confirmation
+# Skip confirmation before deleting folders
+npx node-modules-cleanup@latest ./ --skip-confirmation
+
+# Dry run of the cleanup process, no folders are deleted
+npx node-modules-cleanup@latest ./ --dry
 ```
 
 ## 📝 Arguments
@@ -80,16 +83,16 @@ bun run create-mocks
 The following command will then execute the script.
 
 ```bash
-bun run dev ./mock          # Or any other path
+bun run dev ./mock              # Or any other path
 ```
 
 ### Useful commands during development
 
 ```bash
-bun run dev                 # For local development
-bun run test:js             # Runs the test suite
-bun run test:unused-code    # Check for unused code
-bun run lint                # Run ESLint
-bun run type-check          # Runs the TypeScript checks
-bun run build               # Builds the package
+bun run dev                     # Runs the script
+bun run test                    # Runs the test suite
+bun run unused-code-check       # Check for unused code
+bun run lint                    # Run ESLint
+bun run tsc                     # Runs TypeScript checks
+bun run build                   # Builds the package
 ```
