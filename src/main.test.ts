@@ -70,6 +70,21 @@ describe("main", () => {
         { path: "/path/to/node_modules", size: 100 },
       ]);
     });
+
+    it("should skip deletion of folders if --dry is passed", async () => {
+      process.argv.push("./some/path", "--dry");
+      (findNodeModulesFolders as ReturnType<typeof vi.fn>).mockResolvedValue([
+        "/path/to/node_modules",
+      ]);
+      (
+        calculateSizeOfNodeModulesDirs as ReturnType<typeof vi.fn>
+      ).mockReturnValue({
+        entries: [{ path: "/path/to/node_modules", size: 100 }],
+        totalSize: 100,
+      });
+
+      expect(deleteFolders).not.toHaveBeenCalled();
+    });
   });
 
   it("should log error and exit when no path is provided", async () => {

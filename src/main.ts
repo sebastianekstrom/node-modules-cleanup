@@ -5,7 +5,7 @@ import { findNodeModulesFolders } from "./core/findNodeModulesFolders";
 import { unitsFormatter } from "./formatters/unitsFormatter";
 import { generateTable } from "./output/generateTable";
 import { calculateSizeOfNodeModulesDirs } from "./core/calculateSizeOfNodeModulesDirs";
-import { deleteFolders } from "./core/deleteFolders";
+import { deleteFolders, deleteMessage } from "./core/deleteFolders";
 import chalk from "chalk";
 import type { PackageJson } from "type-fest";
 
@@ -22,6 +22,7 @@ const AVAILABLE_ARGS = {
   "--version": "Show package version",
   "--v": "Show package version",
   "--skip-confirmation": "Skip confirmation before deleting folders",
+  "--dry": "Dry run of the cleanup process, no folders will be deleted",
 };
 
 const displayHelp = () => {
@@ -39,12 +40,13 @@ const parseArgs = (args: string[]) => {
     empty: args.length < 1,
     skipConfirmation: args.includes("--skip-confirmation"),
     version: args.includes("--version") || args.includes("--v"),
+    dry: args.includes("--dry"),
   };
 };
 
 export async function main() {
   const args = process.argv.slice(2);
-  const { help, empty, skipConfirmation, version } = parseArgs(args);
+  const { help, empty, skipConfirmation, version, dry } = parseArgs(args);
 
   if (help) {
     displayHelp();
@@ -86,11 +88,21 @@ export async function main() {
   generateTable({ entries, totalSize });
 
   if (!skipConfirmation) {
-    const answer = await prompt(
-      `${generatePrefix("info")} Do you want to ${chalk.bold.red(
-        "delete",
-      )} the above folders? ${chalk.italic("(yes/no)")}: `,
-    );
+    const baseMessage = `${generatePrefix(
+      "info",
+    )} Do you want to ${chalk.bold.red("delete")} the above folders?`;
+    const confirmationMessage = `${chalk.italic("(yes/no)")}`;
+    const dryMessage = dry
+      ? `${chalk.bold(
+          chalk.blue("(this is a dry, run nothing will be deleted)"),
+        )}`
+      : "";
+
+    const promptMessage = dry
+      ? `${baseMessage} ${dryMessage} ${confirmationMessage}`
+      : `${baseMessage} ${confirmationMessage}`;
+
+    const answer = await prompt(promptMessage);
 
     if (
       answer.toLowerCase() !== "yes" &&
@@ -107,7 +119,21 @@ export async function main() {
 
   const startTime = Date.now();
 
-  await deleteFolders(entries);
+  if (!dry) {
+    await deleteFolders(entries);
+  } else {
+    // Random delay between 50 and 150
+    const fakeDelay = Math.floor(Math.random() * 101) + 50;
+    entries.forEach((_, i) => {
+      setTimeout(() => {
+        process.stdout.write(deleteMessage(i + 1, entries.length));
+      }, i * fakeDelay);
+    });
+
+    await new Promise((resolve) =>
+      setTimeout(resolve, fakeDelay * entries.length),
+    );
+  }
 
   console.log("");
   const endTime = Date.now();
