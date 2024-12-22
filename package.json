@@ -26,8 +26,8 @@
     "tsc": "tsc",
     "build": "bun build ./src/index.ts --outdir ./dist --target node && bun run post-build",
     "post-build": "bun tooling/post-build.ts",
-    "test:js": "vitest",
-    "test:unused-code": "knip"
+    "test": "vitest",
+    "unused-code-check": "knip"
   },
   "bin": {
     "node-modules-cleanup": "./dist/index.mjs"
