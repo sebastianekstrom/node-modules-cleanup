@@ -6,16 +6,20 @@ export interface Entry {
   size: number;
 }
 
+export const deleteMessage = (deletedFoldersCounter: number, entriesLength: number) => {
+  return `\r${generatePrefix(
+    "info",
+  )} Deleting node_modules folders (${deletedFoldersCounter}/${
+    entriesLength
+  })...`;
+};
+
 export const deleteFolders = async (entries: Entry[]) => {
   let deletedFoldersCounter = 0;
   for (const entry of entries) {
     await fs.promises.rm(entry.path, { recursive: true });
     deletedFoldersCounter++;
-    const message = `\r${generatePrefix(
-      "info",
-    )} Deleting node_modules folders (${deletedFoldersCounter}/${
-      entries.length
-    })...`;
+    const message = deleteMessage(deletedFoldersCounter, entries.length);
     process.stdout.write(message);
   }
 };
