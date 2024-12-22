@@ -72,11 +72,13 @@ bun install
 
 ### Generate mocked `node_modules` folders
 
-For easier development, a script is available that will generate multiple mocked`node_modules` folders inside of `./mock`. These will then be populated with dummy files that ranges in size.
+For easier development a script is available that will generate multiple mocked `node_modules` folders inside of the `./mock` folder.
 
 ```bash
 bun run create-mocks
 ```
+
+The number of folders that are generated is randomized, as well as their names and sizes.
 
 ### Run the script
 
