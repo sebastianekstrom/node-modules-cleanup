@@ -12,7 +12,7 @@ const MAX_FOLDERS_CREATE = 20;
 const cleanDummyNodeModulesFolder = () => {
   const dummyFolderPath = path.resolve(DUMMY_LOCATION);
   if (fs.existsSync(dummyFolderPath)) {
-    console.log(`${chalk.red("◉")} Removed existing dummy folder`);
+    console.log(`${chalk.blue("◉")} Removing existing dummy folder`);
     fs.rmSync(dummyFolderPath, { recursive: true, force: true });
   }
 };
@@ -23,6 +23,10 @@ const generateDummyNodeModules = () => {
   const numberOfFolders =
     Math.floor(Math.random() * (MAX_FOLDERS_CREATE - MIN_FOLDERS_CREATED + 1)) +
     MIN_FOLDERS_CREATED;
+
+  console.log(
+    `${chalk.blue("◉")} Creating ${numberOfFolders} node_modules folders`,
+  );
 
   Array.from({ length: numberOfFolders }).forEach(() => {
     const randomAdjective =
@@ -52,21 +56,18 @@ const generateDummyNodeModules = () => {
     const buffer = Buffer.alloc(fileSize);
     fs.writeFileSync(filePath, buffer);
     console.log(
-      `${chalk.blue("◉")} Created ${chalk.bold(filePath)} (${chalk.bold(
+      ` ${chalk.green("◉")} Created ${chalk.bold(filePath)} (${chalk.bold(
         fileSizeMB,
       )}MB)`,
     );
   });
 
   console.log(
-    `${chalk.green("◉")} Dummy node_modules created in the ${chalk.italic(
+    `${chalk.blue(
+      "◉",
+    )} Dummy node_modules where successfully created in ${chalk.italic(
       `./${DUMMY_LOCATION}`,
-    )} folder`,
-  );
-  console.log(
-    `${chalk.blue("◉")} Run ${chalk.italic(
-      `bun run dev ./${DUMMY_LOCATION}`,
-    )} to run the script`,
+    )}`,
   );
 };
 
