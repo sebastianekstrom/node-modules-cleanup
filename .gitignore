@@ -13,6 +13,7 @@ yarn-error.log
 /dist
 .env
 mock/
+package/
 
 # Tests #
 #######
