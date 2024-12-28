@@ -70,12 +70,12 @@ To install the dependencies, run the following command:
 bun install
 ```
 
-### Generate mocked `node_modules` folders
+### Generate dummy `node_modules` folders
 
-For easier development a script is available that will generate multiple mocked `node_modules` folders inside of the `./mock` folder.
+For easier development a script is available that will generate multiple dummy `node_modules` folders inside of the `./dummy` folder.
 
 ```bash
-bun run create-mocks
+bun run create-dummy-files
 ```
 
 The number of folders that are generated is randomized, as well as their names and sizes.
@@ -85,13 +85,13 @@ The number of folders that are generated is randomized, as well as their names a
 The following command will then execute the script.
 
 ```bash
-bun run dev ./mock              # Or any other path
+bun run dev ./dummy              # Or any other path
 ```
 
 ### Useful commands during development
 
 ```bash
-bun run dev                     # Runs the script
+bun run dev                     # Runs development build with hot reloading
 bun run test                    # Runs the test suite
 bun run unused-code-check       # Check for unused code
 bun run lint                    # Run ESLint

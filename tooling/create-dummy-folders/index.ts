@@ -3,26 +3,30 @@ import * as path from "path";
 import chalk from "chalk";
 import { adjectives, animals, subjectives } from "./dictionary";
 
-const MOCK_LOCATION = "mock";
+const DUMMY_LOCATION = "dummy";
 const MIN_FILE_SIZE_MB = 50;
 const MAX_FILE_SIZE_MB = 100;
 const MIN_FOLDERS_CREATED = 10;
 const MAX_FOLDERS_CREATE = 20;
 
-const cleanMockFolder = () => {
-  const mockFolderPath = path.resolve(MOCK_LOCATION);
-  if (fs.existsSync(mockFolderPath)) {
-    console.log(`${chalk.red("◉")} Removed existing mock folder`);
-    fs.rmSync(mockFolderPath, { recursive: true, force: true });
+const cleanDummyNodeModulesFolder = () => {
+  const dummyFolderPath = path.resolve(DUMMY_LOCATION);
+  if (fs.existsSync(dummyFolderPath)) {
+    console.log(`${chalk.blue("◉")} Removing existing dummy folder`);
+    fs.rmSync(dummyFolderPath, { recursive: true, force: true });
   }
 };
 
-const generateMockFiles = () => {
-  cleanMockFolder();
+const generateDummyNodeModules = () => {
+  cleanDummyNodeModulesFolder();
 
   const numberOfFolders =
     Math.floor(Math.random() * (MAX_FOLDERS_CREATE - MIN_FOLDERS_CREATED + 1)) +
     MIN_FOLDERS_CREATED;
+
+  console.log(
+    `${chalk.blue("◉")} Creating ${numberOfFolders} node_modules folders`,
+  );
 
   Array.from({ length: numberOfFolders }).forEach(() => {
     const randomAdjective =
@@ -32,7 +36,7 @@ const generateMockFiles = () => {
       subjectives[Math.floor(Math.random() * subjectives.length)];
     const folderName = `${randomAdjective}${randomAnimal}${randomSubjective}`;
 
-    const tmpDir = path.resolve(`${MOCK_LOCATION}/${folderName}`);
+    const tmpDir = path.resolve(`${DUMMY_LOCATION}/${folderName}`);
     const nodeModulesDir = path.join(tmpDir, "node_modules");
 
     if (!fs.existsSync(tmpDir)) {
@@ -52,22 +56,19 @@ const generateMockFiles = () => {
     const buffer = Buffer.alloc(fileSize);
     fs.writeFileSync(filePath, buffer);
     console.log(
-      `${chalk.blue("◉")} Created ${chalk.bold(filePath)} (${chalk.bold(
+      ` ${chalk.green("◉")} Created ${chalk.bold(filePath)} (${chalk.bold(
         fileSizeMB,
       )}MB)`,
     );
   });
 
   console.log(
-    `${chalk.green("◉")} Mocked node_modules created in the ${chalk.italic(
-      "./mock",
-    )} folder`,
-  );
-  console.log(
-    `${chalk.blue("◉")} Run ${chalk.italic(
-      "bun run dev ./mock",
-    )} to run the script`,
+    `${chalk.blue(
+      "◉",
+    )} Dummy node_modules where successfully created in ${chalk.italic(
+      `./${DUMMY_LOCATION}`,
+    )}`,
   );
 };
 
-generateMockFiles();
+generateDummyNodeModules();
