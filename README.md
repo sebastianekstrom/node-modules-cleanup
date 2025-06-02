@@ -75,10 +75,19 @@ bun install
 For easier development a script is available that will generate multiple mocked `node_modules` folders inside of the `./mock` folder.
 
 ```bash
+# Generate a simple set of mocked folders (default, ~1s cleanup time)
 bun run create-mocks
+
+# Generate a complex set of mocked folders (~7s cleanup time)
+bun run create-mocks -- --mode=complex
 ```
 
-The number of folders that are generated is randomized, as well as their names and sizes.
+The script creates realistic `node_modules` structures with nested directories and various file types:
+
+- **Simple mode** (default): Creates 25-50 project folders with lightweight structures for quick testing
+- **Complex mode**: Creates 100-200 project folders with realistic nested structures for testing performance
+
+The number of folders, files, and their names are randomized to simulate real-world scenarios.
 
 ### Run the script
 
