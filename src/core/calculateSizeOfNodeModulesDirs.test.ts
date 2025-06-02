@@ -10,14 +10,16 @@ describe("calculateSizeOfNodeModulesDirs", () => {
     vi.clearAllMocks();
   });
 
-  it("should calculate the total size of node_modules directories", () => {
-    (getDirectorySize as ReturnType<typeof vi.fn>).mockImplementation((dir) => {
-      if (dir === "/path/to/node_modules1") return 100;
-      if (dir === "/path/to/node_modules2") return 200;
-      return 0;
-    });
+  it("should calculate the total size of node_modules directories", async () => {
+    (getDirectorySize as ReturnType<typeof vi.fn>).mockImplementation(
+      async (dir) => {
+        if (dir === "/path/to/node_modules1") return 100;
+        if (dir === "/path/to/node_modules2") return 200;
+        return 0;
+      },
+    );
 
-    const result = calculateSizeOfNodeModulesDirs({
+    const result = await calculateSizeOfNodeModulesDirs({
       nodeModulesDirs: ["/path/to/node_modules1", "/path/to/node_modules2"],
     });
 
@@ -28,8 +30,8 @@ describe("calculateSizeOfNodeModulesDirs", () => {
     ]);
   });
 
-  it("should call getDirectorySize for each directory", () => {
-    calculateSizeOfNodeModulesDirs({
+  it("should call getDirectorySize for each directory", async () => {
+    await calculateSizeOfNodeModulesDirs({
       nodeModulesDirs: ["/path/to/node_modules1", "/path/to/node_modules2"],
     });
 
@@ -38,22 +40,20 @@ describe("calculateSizeOfNodeModulesDirs", () => {
     expect(getDirectorySize).toHaveBeenCalledWith("/path/to/node_modules2");
   });
 
-  it("should write progress to stdout", () => {
+  it("should write progress to stdout", async () => {
     const stdoutSpy = vi
       .spyOn(process.stdout, "write")
       .mockImplementation(() => true);
 
-    calculateSizeOfNodeModulesDirs({
+    await calculateSizeOfNodeModulesDirs({
       nodeModulesDirs: ["/path/to/node_modules1", "/path/to/node_modules2"],
     });
 
     expect(stdoutSpy).toHaveBeenCalledWith(
-      expect.stringContaining("Locating node_modules folders (found 1)..."),
+      expect.stringContaining("Calculating sizes... (1/2)"),
     );
     expect(stdoutSpy).toHaveBeenCalledWith(
-      expect.stringContaining("Locating node_modules folders (found 2)..."),
+      expect.stringContaining("Calculating sizes... (2/2)"),
     );
-
-    stdoutSpy.mockRestore();
   });
 });

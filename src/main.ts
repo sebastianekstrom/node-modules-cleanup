@@ -81,7 +81,7 @@ export async function main() {
     process.exit(0);
   }
 
-  const { entries, totalSize } = calculateSizeOfNodeModulesDirs({
+  const { entries, totalSize } = await calculateSizeOfNodeModulesDirs({
     nodeModulesDirs,
   });
 

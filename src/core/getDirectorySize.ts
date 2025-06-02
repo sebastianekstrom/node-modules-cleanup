@@ -1,12 +1,12 @@
-import { execSync } from "node:child_process";
+import { exec } from "node:child_process";
+import { promisify } from "node:util";
 
-export function getDirectorySize(dirPath: string): number {
+const execAsync = promisify(exec);
+
+export async function getDirectorySize(dirPath: string): Promise<number> {
   try {
-    const sizeInBlocks = parseInt(
-      execSync(`du -s "${dirPath}" | cut -f1`).toString().trim(),
-      10,
-    );
-
+    const { stdout } = await execAsync(`du -s "${dirPath}" | cut -f1`);
+    const sizeInBlocks = parseInt(stdout.trim(), 10);
     const sizeInBytes = sizeInBlocks * 512;
     return sizeInBytes;
   } catch (err) {
