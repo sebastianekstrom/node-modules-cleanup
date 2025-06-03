@@ -1,6 +1,6 @@
 {
   "name": "node-modules-cleanup",
-  "version": "1.13.0",
+  "version": "1.14.0",
   "description": "Find and delete all node_module folders",
   "repository": {
     "type": "git",
