@@ -2,7 +2,7 @@ import { main } from "./main";
 import { prompt } from "./output/prompt";
 import { findNodeModulesFolders } from "./core/findNodeModulesFolders";
 import { calculateSizeOfNodeModulesDirs } from "./core/calculateSizeOfNodeModulesDirs";
-import { deleteFolders } from "./core/deleteFolders";
+import { deleteFolders, deleteMessage } from "./core/deleteFolders";
 import { logger } from "./output/logger";
 
 import {
@@ -33,10 +33,15 @@ describe("main", () => {
   beforeEach(() => {
     logSpy = vi.spyOn(console, "log").mockImplementation(() => undefined);
     process.argv = ["node", "script.js"];
+
+    // Mock deleteMessage to return a string
+    (deleteMessage as ReturnType<typeof vi.fn>).mockReturnValue("Deleting...");
   });
 
   afterEach(() => {
     vi.clearAllMocks();
+    vi.clearAllTimers();
+    vi.useRealTimers();
   });
 
   describe("args", () => {
@@ -46,8 +51,20 @@ describe("main", () => {
       expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("Usage:"));
     });
 
+    it("should display help and exit when --h is passed", async () => {
+      process.argv.push("--h");
+      await expect(main()).rejects.toThrow("process.exit: 0");
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("Usage:"));
+    });
+
     it("should display version and exit when --version is passed", async () => {
       process.argv.push("--version");
+      await expect(main()).rejects.toThrow("process.exit: 0");
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("Version:"));
+    });
+
+    it("should display version and exit when --v is passed", async () => {
+      process.argv.push("--v");
       await expect(main()).rejects.toThrow("process.exit: 0");
       expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("Version:"));
     });
@@ -72,7 +89,7 @@ describe("main", () => {
     });
 
     it("should skip deletion of folders if --dry is passed", async () => {
-      process.argv.push("./some/path", "--dry");
+      process.argv.push("./some/path", "--dry", "--skip-confirmation");
       (findNodeModulesFolders as ReturnType<typeof vi.fn>).mockResolvedValue([
         "/path/to/node_modules",
       ]);
@@ -83,6 +100,47 @@ describe("main", () => {
         totalSize: 100,
       });
 
+      await expect(main()).rejects.toThrow("process.exit: 0");
+      expect(deleteFolders).not.toHaveBeenCalled();
+    });
+
+    it("should handle dry run with multiple entries", async () => {
+      process.argv.push("./some/path", "--dry", "--skip-confirmation");
+      (findNodeModulesFolders as ReturnType<typeof vi.fn>).mockResolvedValue([
+        "/path/to/node_modules1",
+        "/path/to/node_modules2",
+      ]);
+      (
+        calculateSizeOfNodeModulesDirs as ReturnType<typeof vi.fn>
+      ).mockReturnValue({
+        entries: [
+          { path: "/path/to/node_modules1", size: 100 },
+          { path: "/path/to/node_modules2", size: 200 },
+        ],
+        totalSize: 300,
+      });
+
+      await expect(main()).rejects.toThrow("process.exit: 0");
+      expect(deleteFolders).not.toHaveBeenCalled();
+    });
+
+    it("should show different prompt message for dry run", async () => {
+      process.argv.push("./some/path", "--dry");
+      (findNodeModulesFolders as ReturnType<typeof vi.fn>).mockResolvedValue([
+        "/path/to/node_modules",
+      ]);
+      (
+        calculateSizeOfNodeModulesDirs as ReturnType<typeof vi.fn>
+      ).mockReturnValue({
+        entries: [{ path: "/path/to/node_modules", size: 100 }],
+        totalSize: 100,
+      });
+      (prompt as ReturnType<typeof vi.fn>).mockResolvedValue("yes");
+
+      await expect(main()).rejects.toThrow("process.exit: 0");
+      expect(prompt).toHaveBeenCalledWith(
+        expect.stringContaining("(this is a dry, run nothing will be deleted)"),
+      );
       expect(deleteFolders).not.toHaveBeenCalled();
     });
   });
@@ -150,5 +208,43 @@ describe("main", () => {
           "No node_modules folders were deleted. Exiting the cleanup process",
       }),
     );
+  });
+
+  it("should accept 'y' as confirmation", async () => {
+    process.argv.push("./some/path");
+    (findNodeModulesFolders as ReturnType<typeof vi.fn>).mockResolvedValue([
+      "/path/to/node_modules",
+    ]);
+    (
+      calculateSizeOfNodeModulesDirs as ReturnType<typeof vi.fn>
+    ).mockReturnValue({
+      entries: [{ path: "/path/to/node_modules", size: 100 }],
+      totalSize: 100,
+    });
+    (prompt as ReturnType<typeof vi.fn>).mockResolvedValue("y");
+
+    await expect(main()).rejects.toThrow("process.exit: 0");
+    expect(deleteFolders).toHaveBeenCalledWith([
+      { path: "/path/to/node_modules", size: 100 },
+    ]);
+  });
+
+  it("should accept Swedish confirmation 'kör bara kör!'", async () => {
+    process.argv.push("./some/path");
+    (findNodeModulesFolders as ReturnType<typeof vi.fn>).mockResolvedValue([
+      "/path/to/node_modules",
+    ]);
+    (
+      calculateSizeOfNodeModulesDirs as ReturnType<typeof vi.fn>
+    ).mockReturnValue({
+      entries: [{ path: "/path/to/node_modules", size: 100 }],
+      totalSize: 100,
+    });
+    (prompt as ReturnType<typeof vi.fn>).mockResolvedValue("kör bara kör!");
+
+    await expect(main()).rejects.toThrow("process.exit: 0");
+    expect(deleteFolders).toHaveBeenCalledWith([
+      { path: "/path/to/node_modules", size: 100 },
+    ]);
   });
 });
