@@ -82,7 +82,7 @@ const buildConfirmationMessage = (isDryRun: boolean) => {
   const baseMessage = `${generatePrefix(
     "info",
   )} Do you want to ${chalk.bold.red("delete")} the above folders?`;
-  const confirmationPrompt = chalk.italic("(yes/no)");
+  const confirmationPrompt = chalk.italic("(yes/no) ");
 
   if (isDryRun) {
     const dryRunNotice = chalk.bold(
