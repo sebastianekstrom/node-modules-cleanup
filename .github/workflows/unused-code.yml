@@ -2,16 +2,27 @@ name: 🗑️ Check for unused code
 run-name: Unused code run
 on: [push]
 jobs:
-  linting:
+  unused-code-check:
     runs-on: ubuntu-latest
     steps:
       - name: Code Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+
       - name: Set up Bun
-        uses: oven-sh/setup-bun@v1
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
 
       - name: Install Dependencies
-        run: bun install
+        run: bun install --frozen-lockfile
 
       - name: Check for unused code
         run: bun run unused-code-check
