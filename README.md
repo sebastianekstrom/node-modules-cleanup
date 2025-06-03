@@ -5,9 +5,9 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/npm/v/node-modules-cleanup?logo=npm&cacheSeconds=3601" alt="" />
-  <img src="https://img.shields.io/npm/dm/node-modules-cleanup?logo=npm&cacheSeconds=3601" alt=""/>
-  <img src="https://img.shields.io/codecov/c/github/sebastianekstrom/node-modules-cleanup?logo=codecov&cacheSeconds=3601" alt=""/>
+  <img src="https://img.shields.io/npm/v/node-modules-cleanup?logo=npm&cacheSeconds=3602" alt="" />
+  <img src="https://img.shields.io/npm/dm/node-modules-cleanup?logo=npm&cacheSeconds=3602" alt=""/>
+  <img src="https://img.shields.io/codecov/c/github/sebastianekstrom/node-modules-cleanup?logo=codecov&cacheSeconds=3602" alt=""/>
 </p>
 
 ---
