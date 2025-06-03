@@ -137,6 +137,5 @@ export const subjectives = [
   "Fable",
   "Legacy",
   "Revelation",
-  "Hunt",
   "Trail",
 ];
