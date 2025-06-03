@@ -31,7 +31,7 @@ console.log(chalk.blue("🚀 Starting publish process...\n"));
 try {
   // Step 1: Run tests
   console.log(chalk.yellow("📋 Running tests..."));
-  execSync("bun run test", { stdio: "inherit" });
+  execSync("bun run test --run", { stdio: "inherit" });
   console.log(chalk.green("✅ Tests passed\n"));
 
   // Step 2: TypeScript compilation check
