@@ -26,7 +26,10 @@
     "build": "bun build ./src/index.ts --outdir ./dist --target node && bun run post-build",
     "post-build": "bun tooling/post-build.ts",
     "test": "vitest",
-    "unused-code-check": "knip"
+    "unused-code-check": "knip",
+    "publish:patch": "bun tooling/publish.ts patch",
+    "publish:minor": "bun tooling/publish.ts minor",
+    "publish:major": "bun tooling/publish.ts major"
   },
   "bin": {
     "node-modules-cleanup": "./dist/index.mjs"
