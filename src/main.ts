@@ -85,9 +85,9 @@ const buildConfirmationMessage = (isDryRun: boolean) => {
   const confirmationPrompt = chalk.italic("(yes/no) ");
 
   if (isDryRun) {
-    const dryRunNotice = chalk.bold(
-      chalk.blue("(this is a dry, run nothing will be deleted)"),
-    );
+      const dryRunNotice = chalk.bold(
+        chalk.blue("(this is a dry run, nothing will be deleted)"),
+      );
     return `${baseMessage} ${dryRunNotice} ${confirmationPrompt}`;
   }
 
