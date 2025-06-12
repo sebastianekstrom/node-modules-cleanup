@@ -139,7 +139,7 @@ describe("main", () => {
 
       await expect(main()).rejects.toThrow("process.exit: 0");
       expect(prompt).toHaveBeenCalledWith(
-        expect.stringContaining("(this is a dry, run nothing will be deleted)"),
+        expect.stringContaining("(this is a dry run, nothing will be deleted)"),
       );
       expect(deleteFolders).not.toHaveBeenCalled();
     });
