@@ -15,6 +15,16 @@ const SOURCE_DIRS = ["lib", "src", "dist", "types"];
 const FILES_PER_DIR = 6;
 const FILE_SIZE_BYTES = 8 * 1024; // 8KB per file
 
+function getPreviousDuration(): number | null {
+  try {
+    const readme = fs.readFileSync(README_PATH, "utf-8");
+    const match = readme.match(/\*\*Duration: ([\d.]+)s\*\*/);
+    return match ? parseFloat(match[1]) : null;
+  } catch {
+    return null;
+  }
+}
+
 function updateReadme(duration: string): void {
   const readme = fs.readFileSync(README_PATH, "utf-8");
 
@@ -97,6 +107,7 @@ function generateMockData(targetDir: string): void {
 
 function benchmark() {
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "benchmark-"));
+  const previousDuration = getPreviousDuration();
 
   console.log(`\nBenchmarking node-modules-cleanup`);
   console.log("=".repeat(50));
@@ -119,11 +130,23 @@ function benchmark() {
       encoding: "utf-8",
       cwd: process.cwd(),
     });
-    const duration = performance.now() - runStart;
-    const durationStr = `${(duration / 1000).toFixed(2)}s`;
+    const durationMs = performance.now() - runStart;
+    const durationSec = durationMs / 1000;
+    const durationStr = `${durationSec.toFixed(2)}s`;
 
     console.log("\n" + "=".repeat(50));
     console.log(`Duration: ${durationStr}`);
+
+    // Compare with previous
+    if (previousDuration !== null) {
+      const diff = durationSec - previousDuration;
+      const diffPercent = ((diff / previousDuration) * 100).toFixed(1);
+      const sign = diff > 0 ? "+" : "";
+      const status = diff < 0 ? "faster" : diff > 0 ? "slower" : "same";
+      console.log(
+        `Previous: ${previousDuration.toFixed(2)}s (${sign}${diffPercent}% ${status})`,
+      );
+    }
 
     // Cleanup remaining temp folder structure
     console.log("\nCleaning up...");
