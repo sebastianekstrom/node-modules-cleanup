@@ -100,3 +100,18 @@ bun run lint                    # Run ESLint
 bun run tsc                     # Runs TypeScript checks
 bun run build                   # Builds the package
 ```
+
+## Benchmark
+
+<!-- BENCHMARK:START -->
+| Configuration | Value |
+| ------------- | ----- |
+| Projects | 50 |
+| Packages per project | 12 |
+| Nested node_modules depth | 2 |
+| Files per package | 24 |
+
+**Duration: 10.86s**
+
+*Tested on MacBook Pro M1 Pro, 16GB RAM*
+<!-- BENCHMARK:END -->
