@@ -111,7 +111,7 @@ bun run build                   # Builds the package
 | Nested node_modules depth | 2 |
 | Files per package | 24 |
 
-**Duration: 10.86s**
+**Duration: 10.52s**
 
 *Tested on MacBook Pro M1 Pro, 16GB RAM*
 <!-- BENCHMARK:END -->
