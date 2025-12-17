@@ -26,6 +26,7 @@
     "build": "bun build ./src/index.ts --minify --outdir ./dist --target node && bun run post-build",
     "post-build": "bun tooling/post-build.ts",
     "test": "vitest",
+    "benchmark": "bun ./tooling/benchmark.ts",
     "unused-code-check": "knip",
     "publish:patch": "bun tooling/publish.ts patch",
     "publish:minor": "bun tooling/publish.ts minor",
